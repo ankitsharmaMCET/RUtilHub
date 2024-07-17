@@ -19,6 +19,7 @@
 #' @rdname get_lat_long
 #' @export
 #' @importFrom httr GET status_code content
+#' @importFrom httr user_agent
 #' @importFrom dplyr bind_rows
 #' @importFrom jsonlite fromJSON
 get_lat_long <- function(locations) {
@@ -27,7 +28,7 @@ get_lat_long <- function(locations) {
     url <- paste0("https://nominatim.openstreetmap.org/search?q=", URLencode(location), "&format=json&limit=1")
     response <- tryCatch(
       {
-        httr::GET(url, user_agent("RUtilHub/1.0"))
+        httr::GET(url, httr::user_agent("RUtilHub/1.0"))
       },
       error = function(e) {
         message("Error: ", e)
