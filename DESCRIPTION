@@ -6,9 +6,11 @@ Authors@R: person("Ankit", "Sharma", email = "your.email@example.com", role = c(
 Description: A collection of utility functions for various tasks, including data retrieval and processing.
 Depends: R (>= 3.5.0)
 Imports:
-    httr,
-    jsonlite,
-    dplyr
+  ggplot2,
+  httr,
+  jsonlite,
+  dplyr,
+  sf
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
