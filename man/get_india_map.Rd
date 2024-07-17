@@ -5,6 +5,7 @@
 \title{Get India Map Data or Plot}
 \usage{
 get_india_map(
+  shapefile_folder = NULL,
   fill,
   location_category,
   location_name = "INDIA",
@@ -12,6 +13,8 @@ get_india_map(
 )
 }
 \arguments{
+\item{shapefile_folder}{Path to the folder containing shapefiles. If `NULL`, an error is thrown.}
+
 \item{fill}{Type of administrative boundary to retrieve ("state", "district", "subdistrict", etc.).}
 
 \item{location_category}{Category of administrative division ("STATE", "DISTRICT", "SUBDISTRICT", etc.).}
@@ -27,19 +30,19 @@ Depending on action, returns spatial data or plots it.
 Retrieves map data or plots for Indian administrative boundaries.
 }
 \details{
-This function retrieves Indian administrative boundary data from shapefiles included in the R package "RUtilHub".
+This function retrieves Indian administrative boundary data from shapefiles included in the specified folder.
 }
 \examples{
 \dontrun{
 # Example usage to plot the map for a state
-get_india_map(fill = "state", location_category = "STATE", location_name = "karnataka", action = "plot_map")
+get_india_map(shapefile_folder = "path/to/shapefiles", fill = "state", location_category = "STATE", location_name = "karnataka", action = "plot_map")
 
 # Example usage to return the filtered data for a subdistrict
-map_data <- get_india_map(fill = "subdistrict", location_category = "STATE", location_name = "UTTARAKHAND", action = "get_map_data")
+map_data <- get_india_map(shapefile_folder = "path/to/shapefiles", fill = "subdistrict", location_category = "STATE", location_name = "UTTARAKHAND", action = "get_map_data")
 print(map_data)
 
 # Example usage to plot the map for the entire country
-get_india_map(fill = "STATE", location_category = "COUNTRY", location_name = "INDIA", action = "plot_map")
+get_india_map(shapefile_folder = "path/to/shapefiles", fill = "STATE", location_category = "COUNTRY", location_name = "INDIA", action = "plot_map")
 }
 }
 \seealso{
