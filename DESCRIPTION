@@ -1,0 +1,15 @@
+Package: RUtilHub
+Type: Package
+Title: Utility Functions for Various Tasks
+Version: 0.1.0
+Authors@R: person("Ankit", "Sharma", email = "your.email@example.com", role = c("aut", "cre"))
+Description: A collection of utility functions for various tasks, including data retrieval and processing.
+Depends: R (>= 3.5.0)
+Imports:
+    httr,
+    jsonlite,
+    dplyr
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.1
