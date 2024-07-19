@@ -2,8 +2,10 @@
 
 export(get_india_map)
 export(get_lat_long)
+export(transform_regions)
 import(ggplot2)
 importFrom(dplyr,bind_rows)
+importFrom(glue,glue)
 importFrom(httr,GET)
 importFrom(httr,content)
 importFrom(httr,status_code)

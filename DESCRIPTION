@@ -10,6 +10,7 @@ Imports:
   httr,
   jsonlite,
   dplyr,
+  glue,
   sf
 License: GPL-3
 Encoding: UTF-8
