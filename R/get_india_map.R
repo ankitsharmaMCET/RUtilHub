@@ -34,9 +34,18 @@ get_india_map <- function(shapefile_folder = NULL, fill, location_category, loca
 
   # Match the action argument to ensure it's valid
   action <- match.arg(action)
+  # Construct the full shapefile path using if-else
+  # Check if fill is "COUNTRY" and location_category is "COUNTRY"
+  is_country = FALSE
+  if (toupper(fill) == "COUNTRY" && toupper(location_category) == "COUNTRY") {
+    fill <- "STATE"
+    is_country = TRUE
+  }
+  shapefile_path <- paste0(shapefile_folder, "/", toupper(fill), "_BOUNDARY.shp")
+
 
   # Construct the full shapefile path
-  shapefile_path <- paste0(shapefile_folder, "/", toupper(fill), "_BOUNDARY.shp")
+
 
   # Read the shapefile
   shapefile_data <- sf::st_read(shapefile_path)
@@ -64,7 +73,7 @@ get_india_map <- function(shapefile_folder = NULL, fill, location_category, loca
   shapefile_data$COUNTRY <- "INDIA"
 
   # Rename district column if fill is "DISTRICT"
-  if (toupper(fill) == "DISTRICT") {
+  if (toupper(fill) == "DISTRICT" || toupper(fill) == "SUBDISTRICT" ) {
     colnames(shapefile_data)[colnames(shapefile_data) == "District"] <- "DISTRICT"
   }
 
@@ -73,16 +82,18 @@ get_india_map <- function(shapefile_folder = NULL, fill, location_category, loca
     stop("The specified location category does not exist in the shapefile data.")
   }
 
+
   # Filter the shapefile data based on the location category and location name
-  if (toupper(fill) == "COUNTRY" && toupper(location_category) == "COUNTRY") {
+  if (is_country) {
+    PLOT_DATA <- shapefile_data
     # Aggregate all state polygons into a single polygon
-    PLOT_DATA <- sf::st_union(shapefile_data)
+    PLOT_DATA <- sf::st_union(PLOT_DATA)
   } else {
     PLOT_DATA <- shapefile_data[shapefile_data[[location_category]] == toupper(location_name), ]
   }
 
   # Check if any data is available after filtering
-  if (nrow(PLOT_DATA) == 0 && !is.null(location_name)) {
+  if (nrow(PLOT_DATA) == 0 && !is_country) {
     stop("No data found for the specified location name in the given category.")
   }
 
@@ -94,8 +105,8 @@ get_india_map <- function(shapefile_folder = NULL, fill, location_category, loca
   # Plot the filtered shapefile data if action is "plot_map"
   if (action == "plot_map") {
     ggplot(data = PLOT_DATA) +
-      geom_sf(fill = "lightblue", color = ifelse(toupper(fill) == "COUNTRY", "NA", "darkblue")) +
-      theme_minimal() +
+      geom_sf(fill = "lightblue", color = ifelse(is_country, "NA", "darkblue")) +
+      theme_minimal()  +
       labs(title = paste("Map of", ifelse(toupper(fill) == "COUNTRY", "INDIA", location_name), "(", fill, ")"),
            caption = "Source: Administrative Boundary Database") +
       theme(plot.title = element_text(hjust = 0.5, size = 20, face = "bold"),

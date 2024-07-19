@@ -60,6 +60,6 @@ get_lat_long <- function(locations) {
 }
 
 # Example usage:
-locations <- c("New York", "Los Angeles", "Chicago")
-lat_long_df <- get_lat_long(locations)
-print(lat_long_df)
+# locations <- c("New York", "Los Angeles", "Chicago")
+# lat_long_df <- get_lat_long(locations)
+# print(lat_long_df)
