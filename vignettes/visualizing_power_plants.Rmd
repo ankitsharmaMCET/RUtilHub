@@ -1,0 +1,106 @@
+---
+title: "visualizing_power_plants"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{visualizing_power_plants}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(readxl)
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(RUtilHub)
+library(plotly)
+```
+
+
+
+
+
+<h3>Load and Process Data</h3>
+<p>We read the power plants data from an Excel file and convert the location names to uppercase for consistency.</p>
+```{r}
+
+# Load power plants data
+ut_power_plants <- read_excel("C:/Users/Lab 2/Desktop/tools/power_plants_data.xlsx")
+ut_power_plants
+```
+
+
+```{r}
+# Convert location names to uppercase
+ut_power_plants$location_name <- toupper(ut_power_plants$location_name)
+
+# Extract locations
+locations <- ut_power_plants$location_name
+ut_power_plants
+```
+<h3>Get Latitude and Longitude</h3>
+<p>We use a function to get latitude and longitude for each location. </p>
+```{r}
+# Get latitude and longitude for each location
+pp_locations <- get_lat_long(locations = locations)
+
+# Rename 'location' column to 'location_name'
+pp_locations$location_name <- pp_locations$location
+pp_locations <- pp_locations %>% select(-location)
+```
+<h3>Merge Data</h3>
+<p>Merge the power plants data with the latitude and longitude information.</p>
+```{r}
+# Merge power plants data with location coordinates
+merged_pp <- merge(ut_power_plants, pp_locations, by = "location_name")
+
+# Remove rows with missing values
+merged_pp_clean <- na.omit(merged_pp)
+
+# Convert to sf object
+merged_pp_sf <- st_as_sf(merged_pp_clean, coords = c("longitude", "latitude"), crs = 4326)
+```
+
+
+```{r}
+shapefile_folder <- "C:/Users/Lab 2/Desktop/tools/shapefiles"
+UTTARAKHAND_MAP <- get_india_map(shapefile_folder = shapefile_folder, fill = "STATE", location_category = "STATE", location_name = "UTTARAKHAND", action = "get_map_data")
+```
+<h2>Visualization</h2>
+<p>We use <code>ggplot2</code> to create a map showing the power plant locations. The map displays the power plants colored by their primary fuel type and sized according to their capacity.</p>
+```{r}
+# Plot the map
+p<-ggplot() +
+  geom_sf(data = UTTARAKHAND_MAP, fill = "white", color = "black") +
+  geom_sf(data = merged_pp_sf, aes(color = primary_fuel, size = capacity_MW,text = paste("Plant Name: ", plant_name, "<br>",
+                 "Primary Fuel: ", primary_fuel, "<br>",
+                 "Capacity (MW): ", capacity_MW))) +
+  scale_size_continuous(range = c(1, 6), name = "Capacity (MW)") + # Adjust range for bubble size
+  labs(title = "Power Plant Locations in Uttarakhand",
+       x = "Longitude",
+       y = "Latitude") +
+  theme_bw() +
+  theme(legend.position = "right")
+```
+
+```{r}
+print(p)
+
+```
+
+```{r}
+# Convert ggplot2 plot to plotly
+p_plotly <- ggplotly(p,tooltip = "text")
+
+# Display the interactive plotly plot
+p_plotly
+```
+  
+<h2>Conclusion</h2>
+<p>This vignette provides a detailed example of how to visualize power plant locations in Uttarakhand using <code>ggplot2</code> and <code>sf</code>. By mapping these locations with additional information such as fuel type and capacity, we gain valuable insights into the distribution of power plants in the region.</p>
+<p>For further customization or analysis, you can adjust the <code>ggplot2</code> parameters and data processing steps as needed.</p>
+<p><strong>Note:</strong> If you encounter issues with loading the base map or functions like <code>get_lat_long</code>, ensure that all necessary packages and data files are correctly set up and paths are properly specified.</p>

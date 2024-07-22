@@ -11,7 +11,9 @@ Imports:
   jsonlite,
   dplyr,
   glue,
-  sf
+  sf,
+  readxl,
+  plotly
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
