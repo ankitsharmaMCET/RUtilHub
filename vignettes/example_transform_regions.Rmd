@@ -1,0 +1,90 @@
+---
+title: "example_transform_regions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{example_transform_regions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(glue)
+library(ggplot2)
+library(RUtilHub)
+```
+
+
+<h1 style="color:blue;">Transforming Regions in Uttarakhand</h1>
+<p>In this example, we will transform the regions within the state of Uttarakhand in India.</p>
+<h2 style="color:green;">Define your groups and replacements for Uttarakhand</h2>
+
+
+```{r}
+groups <- list(
+  c("ALMORA", "BAGESHWAR", "CHAMPAWAT", "NAINITAL", "PITHORAGARH", "UDHAM SINGH NAGAR"),
+  c("DEHRADUN", "HARIDWAR", "PAURI GARHWAL", "RUDRAPRAYAG", "TEHRI GARHWAL", "UTTARKASHI", "CHAMOLI")
+)
+replacements <- c("KUMAON", "GARHWAL")
+```
+
+<h2 style="color:green;">Load Uttarakhand map data</h2>
+
+```{r}
+shapefile_folder <- "C:/Users/Lab 2/Desktop/tools/shapefiles"  # Update this path accordingly
+UTTARAKHAND_MAP <- get_india_map(shapefile_folder = shapefile_folder, fill = "DISTRICT", location_category = "STATE", location_name = "UTTARAKHAND", action = "get_map_data")
+```
+
+<h2 style="color:green;">Apply the transformation</h2>
+```{r}
+
+result <- transform_regions(UTTARAKHAND_MAP, existing_column_name = "DISTRICT", groups, replacements, view_transformed_map = TRUE)
+
+# Extract the map and the plot from the result
+df <- result$map
+view_map <- result$view_map
+```
+
+<h2 style="color:green;">View the map</h2>
+```{r}
+print(view_map)
+
+```
+
+
+<h1 style="color:blue;">Transforming Regions in India</h1>
+<p>In this example, we will transform the regions within the country of India into different groups.</p>
+<h2 style="color:green;">Define your groups and replacements for India</h2>
+```{r}
+
+groups <- list(
+  c("CHANDIGARH", "DELHI", "HARYANA", "HIMACHAL PRADESH", "JAMMU AND KASHMIR", "LADAKH", "PUNJAB", "RAJASTHAN", "UTTARAKHAND", "UTTAR PRADESH"),
+  c("ANDAMAN & NICOBAR", "ANDHRA PRADESH", "KARNATAKA", "KERALA", "LAKSHADWEEP", "PUDUCHERRY", "TAMIL NADU", "TELANGANA"),
+  c("BIHAR", "JHARKHAND", "ODISHA", "WEST BENGAL", "ARUNACHAL PRADESH", "ASSAM", "MANIPUR", "MEGHALAYA", "MIZORAM", "NAGALAND", "SIKKIM", "TRIPURA"),
+  c("DADRA & NAGAR HAVELI & DAMAN & DIU", "GOA", "GUJARAT", "MAHARASHTRA", "MADHYA PRADESH", "CHHATTISGARH")
+)
+replacements <- c("NORTH_GROUP", "SOUTH_GROUP", "EAST_GROUP", "WEST_GROUP")
+```
+
+<h2 style="color:green;"><b>Load India map data</b></h2>
+```{r}
+
+INDIA_MAP <- get_india_map(shapefile_folder = shapefile_folder, fill = "STATE", location_category = "COUNTRY", location_name = "INDIA", action = "get_map_data")
+
+# Apply the transformation
+result <- transform_regions(INDIA_MAP, existing_column_name = "STATE", groups, replacements, view_transformed_map = TRUE)
+
+# Extract the map and the plot from the result
+df <- result$map
+view_map <- result$view_map
+```
+
+<h2 style="color:green;">View the map</h2>
+```{r}
+
+print(view_map)
+```
+
